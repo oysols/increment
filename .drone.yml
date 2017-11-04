@@ -1,0 +1,22 @@
+pipeline:
+    build:
+        image: docker
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        commands:
+            - docker build . -t increment
+    test:
+        image: increment
+        commands:
+            - mypy *.py --strict --allow-untyped-decorator --cache-dir /dev/null
+            - pytest
+            - flake8 --ignore E128,E127
+    deploy:
+        when:
+            branch:
+                master
+        image: docker
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        commands:
+            - docker run -d --tty -p 8002:5000 --restart always -it increment

@@ -1,0 +1,10 @@
+version: "3"
+services:
+    increment:
+        build: .
+        tty: True
+        ports:
+            - 8002:5000
+        restart: always
+        environment:
+            - AUTH_KEY=
